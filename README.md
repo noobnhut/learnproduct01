@@ -31,3 +31,4 @@
 # chạy DB bằng lệnh  npx sequelize-cli db:migrate
 
 # chạy source BE npm run start
+# chạy source FE npm run dev
