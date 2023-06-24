@@ -34,35 +34,37 @@ const getProductById = async (req, res) => {
 };
 
 const addProduct = async (req, res) => {
+  // lấy dữ liệu từ body 
   const { productname, cost, profit, id_cat } = req.body;
-
   try {
+    // kiểm tra cat có tt hay ko
     const cat = await Categories.findByPk(id_cat);
-
-    if (!productname || !cost || !profit || !id_cat) {
-      res.status(400).json({
-        message: "Vui lòng cung cấp đầy đủ thông tin sản phẩm.",
-      });
-    } else if (!cat) {
-      res.status(404).json({
+    if (!cat) {
+      return res.status(404).json({
         message: `Id cat ${id_cat} không tồn tại`,
       });
-    } else {
-      const product = await Product.create({
-        productname,
-        cost,
-        profit,
-        id_cat,
-      });
-      res.json({
-        product,
-        message: "Thêm product thành công!",
-      });
     }
+    // kiểm tra trung product
+    const product_check = await Product.findOne({ where: { productname } });
+
+    if (!productname || !cost || !profit || isNaN(profit) || isNaN(cost)) {   
+        return res.status(200).json({
+          message: "Thông tin không hợp, vui lòng nhập lại",
+        });
+    }
+
+    if (!product_check) {
+      const product = await Product.create({ productname, cost, profit, id_cat });
+      return res.json({ message: "Thêm product thành công!" });
+    }
+    else {
+      return res.status(400).json({ message: "Sản phẩm đã tồn tại." })
+    }
+
   } catch (error) {
     console.log(error.message);
     res.status(500).json({
-      error: "Thêm product thất bại!",
+      error
     });
   }
 };

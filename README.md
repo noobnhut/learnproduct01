@@ -32,3 +32,8 @@
 
 # chạy source BE npm run start
 # chạy source FE npm run dev
+
+# git add . 
+# git commit -m "a" 
+# git pull
+# git push
